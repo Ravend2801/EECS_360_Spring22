@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Raven's Pie Charts</title>
+        <style>
+            canvas{
+                border: 1px solid #333;
+                margin: 2rem auto;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id= "pie" width="1200" height="800"></canvas>
+        <script>
+        //declare the first data set 
+        const results1 = [
+        {name: "Satisfied", count: 927, color: "blue"},
+        {name: "Neutral", count: 463, color: "green"},
+        {name: "Unsatisfied", count: 510, color: "pink"},
+        {name: "No comment", count: 102, color: "black"}
+        ];
+        
+        //declare the second data set
+        const results2 = [
+        {name:'Very happy', count:63, color: "blue"},
+        {name:'Happy', count:104, color: "green"},
+        {name:'Neutral', count:87, color: "pink"},
+        {name:'Unhappy', count:51, color: "silver"},
+        {name:'Very Unhappy', count:26, color: "black"},
+        {name:'No comment', count:18, color: "red"},
+        ];
+
+        //function to draw pie chart 
+        function draw(x,y,radius, results,i){
+            let canvas = document.getElementById('pie');
+            let cx = canvas.getContext("2d");
+            //calculate the total amount of participants 
+            let total = results.reduce((ttl, result) => 
+                {return ttl + result.count}, 0);
+            let currentAngle = -0.5 * Math.PI;
+            results.forEach(result => {
+                cx.beginPath();
+
+                // draw the pie wedges
+                let endAngle = ((result.count / total) * Math.PI * 2) + currentAngle;  //compute the end angle              
+                cx.arc(x, y, radius, currentAngle, endAngle, false);
+                cx.lineTo(x, y);
+                cx.fillStyle = result.color; //fill the pie chart with the corresponding color
+                cx.fill();
+
+                // add the labels
+                cx.beginPath();
+                cx.font = '20px Times New Roman';
+                cx.textAlign = 'center';
+                cx.fillStyle =result.color;
+
+                // find the midpoint between the two angles
+                // 1.5 * radius is the length of the Hypotenuse
+                let theta = (currentAngle + endAngle)/2;
+                let deltaY = Math.sin(theta) * 1.5 * radius;
+                let deltaX = Math.cos(theta) * 1.5 * radius;
+                cx.fillText(result.name, deltaX+x, deltaY+y);
+                cx.closePath();
+                
+                //set the current angle to the end angle to begin drawing the next curve
+                currentAngle = endAngle;
+
+                //add label for the number of data
+              	cx.beginPath();
+                cx.font = '30px Times New Roman';
+                cx.textAlign = 'center';
+                cx.fillStyle = 'black';
+              	cx.fillText('Data set '+ i, x, 650);
+            })
+        }
+        //call the function to draw 
+        document.addEventListener('DOMContentLoaded', draw(300,400,150,results1,1));
+        document.addEventListener('DOMContentLoaded', draw(900,400,150,results2,2));
+        </script>
+    
+    </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Duong's Tab Page</title>
+</head>
+<style type="text/css">
+.center {
+margin: 0;
+position: absolute;
+top: 50%;
+left: 50%;
+-ms-transform: translate(-50%, -50%);
+transform: translate(-50%, -50%);
+} 
+tab-panel > button.clicked{
+color: #FFFFFF;
+background: #ff2525;
+}
+tab-panel > div[data-tabname].hidden {
+display: none;
+}
+</style>
+<body>
+<tab-panel>
+    <div data-tabname="A">Tab A</div>
+    <div data-tabname="B">Tab B</div>
+    <div data-tabname="C">Tab C</div>
+</tab-panel>
+<script>
+    // variable to keep the selected tab
+    let tabname; 
+    //variable to the body of the selected 
+    let tabBody;
+    //asTab function
+    function asTabs(node) {
+        let length = node.children.length;
+        //loop to create the button and insert it to node
+        for (let i = 0; i < length; i++) {
+            let button = document.createElement("button");
+            //add the attribute to the button
+            button.textContent = document.querySelectorAll("div")[i].getAttribute("data-tabname");
+            //hide the body of the tabs at first
+            node.querySelectorAll("div")[i].classList.add("hidden");
+            //change the to the different clicked tab
+            button.addEventListener("click", changeTab);
+            node.insertBefore(button, document.querySelector("div"));
+        }
+        //set the initially selected tab (tabname) & show its content (tabBody).
+        tabname = document.querySelector("button");
+        //the button turns green when it is clicked
+        tabname.classList.add("clicked");
+        tabBody = document.querySelector("div");
+        tabBody.classList.toggle("hidden");
+    }
+    asTabs(document.querySelector("tab-panel"));
+    //function called in the asTabs function to change the current tab to the newly selected one
+    function changeTab(event) {
+    //removes the selected class from the previous tab
+        tabname.classList.remove("clicked");
+        tabname = event.target;
+    //add the new tab to the tab list.
+        tabname.classList.add("clicked");
+        let tabContent = document.querySelectorAll("div");
+    //hide the previous tab.
+        tabBody.classList.toggle("hidden");
+    //show of the contents of the tabs according to the action.
+        switch(tabname.textContent) {
+        case "A":
+        tabBody = tabContent[0];
+        break;
+        case "B":
+        tabBody = tabContent[1];
+        break;
+        case "C":
+        tabBody = tabContent[2];
+        break;
+        }
+    //show the tab that is selected
+        tabBody.classList.toggle("hidden");
+    }
+</script>
+</body>
+</html>
